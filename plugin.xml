@@ -2,7 +2,7 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    id="cordova-plugin-media-retrieve"
+    id="cordova-file-browser"
     version="0.5.4">
     <name>FileBrowser</name>
     <description>Cordova Plugin Get Data Files Android</description>
