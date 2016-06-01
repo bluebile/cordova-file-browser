@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="cordova-plugin-media-retrieve"
+    version="0.5.4">
+    <name>FileBrowser</name>
+    <description>Cordova Plugin Get Data Files Android</description>
+    <license>MIT License</license>
+    <keywords>cordova,media,retrieve,image,audio,video,file</keywords>
+    <repo>https://github.com/bluebile/cordova-file-browser</repo>
+
+    <js-module src="www/FileBrowser.js" name="FileBrowser">
+        <clobbers target="FileBrowser" />
+    </js-module>
+
+    <!-- android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="FileBrowser">
+                <param name="android-package" value="com.denysbsb.cordova.FileBrowser"/>
+            </feature>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        </config-file>
+
+        <source-file src="src/android/FileBrowser.java" target-dir="src/com/denysbsb/cordova" />
+
+     </platform>
+
+</plugin>

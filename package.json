@@ -1,0 +1,30 @@
+{
+    "name": "cordova-file-browser",
+    "version": "0.1",
+    "description": "Cordova Plugin Get Data Files Android",
+    "engines": [{
+        "name": "cordova-android",
+        "version": ">=4.0.0"
+    }],
+    "cordova": {
+        "id": "cordova-file-browser",
+        "platforms": [
+            "android"
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bluebile/cordova-file-browser"
+    },
+    "keywords": [
+        "cordova",
+        "meida",
+        "ContentProvider",
+        "ecosystem:cordova",
+        "cordova-android"
+    ],
+    "scripts": {},
+    "author": "denysbsb",
+    "license": "MIT License",
+    "devDependencies": {}
+}
