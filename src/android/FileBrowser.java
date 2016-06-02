@@ -36,7 +36,9 @@ public class FileBrowser extends CordovaPlugin {
             String str[] = {
                     MediaStore.Images.Media._ID,
                     MediaStore.Images.Media.DISPLAY_NAME,
-                    MediaStore.Images.Media.DATA};
+                    MediaStore.Images.Media.DATA,
+                    MediaStore.Images.Media.SIZE
+                };
             cursor = cordova.getActivity().getContentResolver().query(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, str,
                     null, null, null);
@@ -46,7 +48,9 @@ public class FileBrowser extends CordovaPlugin {
             String str[] = {
                     MediaStore.Audio.Media._ID,
                     MediaStore.Audio.Media.DISPLAY_NAME,
-                    MediaStore.Audio.Media.DATA};
+                    MediaStore.Audio.Media.DATA,
+                    MediaStore.Audio.Media.SIZE,
+                };
             cursor = cordova.getActivity().getContentResolver().query(
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, str,
                     null, null, null);
@@ -55,7 +59,9 @@ public class FileBrowser extends CordovaPlugin {
             String str[] = {
                     MediaStore.Video.Media._ID,
                     MediaStore.Video.Media.DISPLAY_NAME,
-                    MediaStore.Video.Media.DATA};
+                    MediaStore.Video.Media.DATA,
+                    MediaStore.Video.Media.SIZE,
+                };
             cursor = cordova.getActivity().getContentResolver().query(
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI, str,
                     null, null, null);
@@ -67,7 +73,8 @@ public class FileBrowser extends CordovaPlugin {
             String str[] = {
                     MediaStore.Files.FileColumns._ID,
                     MediaStore.Files.FileColumns.TITLE,
-                    MediaStore.Files.FileColumns.DATA
+                    MediaStore.Files.FileColumns.DATA,
+                    MediaStore.Files.FileColumns.SIZE
             };
 
             String selectionMimeType = MediaStore.Files.FileColumns.MIME_TYPE + "=?";
@@ -88,6 +95,7 @@ public class FileBrowser extends CordovaPlugin {
                 String id = cursor.getString(0);
                 String name = cursor.getString(1);
                 String path = cursor.getString(2);
+                String size = cursor.getString(3);
 
                 Uri uri=Uri.parse(baseUri+id);
 
@@ -95,6 +103,7 @@ public class FileBrowser extends CordovaPlugin {
                     item.put("name", name);
                     item.put("uri", uri);
                     item.put("path", path);
+                    item.put("size", size);
                 }catch (JSONException e){
                     System.out.println(e.getMessage());
                     callback.error(e.getMessage());
