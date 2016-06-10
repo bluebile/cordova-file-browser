@@ -15,24 +15,83 @@ import org.json.JSONException;
 
 public class FileBrowser extends CordovaPlugin {
 
+    String [] permissions = { Manifest.permission.READ_EXTERNAL_STORAGE};
+    String [] fileType;
+    CallbackContext _callbackContext;
+    JSONArray listFile;
 
-    public boolean execute(final String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-       cordova.getThreadPool().execute(new Runnable() {
-           @Override
-           public void run() {
-               runQuery(action,callbackContext);
-           }
-       });
+        _callbackContext = callbackContext;
+        listFile = args;
+        Log.d(TAG, "We are entering execute");
+
+        if(action.equals("getPermission"))
+        {
+            if(hasPermisssion())
+            {
+                PluginResult r = new PluginResult(PluginResult.Status.OK);
+                _callbackContext.sendPluginResult(r);
+                return true;
+            }
+            else {
+                PermissionHelper.requestPermissions(this, 0, permissions);
+            }
+            return true;
+        }else if(action.equals("browse")){
+            runQuery();
+            return true;
+        }
+    }
+
+    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException
+    {
+        PluginResult result;
+        //This is important if we're using Cordova without using Cordova, but we have the geolocation plugin installed
+        if(_callbackContext != null) {
+            for (int r : grantResults) {
+                if (r == PackageManager.PERMISSION_DENIED) {
+                    LOG.d(TAG, "Permission Denied!");
+                    result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
+                    _callbackContext.sendPluginResult(result);
+                    return;
+                }
+
+            }
+            result = new PluginResult(PluginResult.Status.OK);
+            _callbackContext.sendPluginResult(result);
+        }
+    }
+
+    public boolean hasPermisssion() {
+        for(String p : permissions)
+        {
+            if(!PermissionHelper.hasPermission(this, p))
+            {
+                return false;
+            }
+        }
         return true;
     }
 
-    private void runQuery(String action, CallbackContext callback){
+    /*
+     * We override this so that we can access the permissions variable, which no longer exists in
+     * the parent class, since we can't initialize it reliably in the constructor!
+     */
+
+    public void requestPermissions(int requestCode)
+    {
+        PermissionHelper.requestPermissions(this, requestCode, permissions);
+    }
+
+    private void runQuery(){
         JSONObject data=new JSONObject();
         JSONArray resArray=new JSONArray();
         Cursor cursor=null;
         String baseUri="";
-        if(action.equals("image")) {
+        String type = 'file';
+
+        if(type.equals("image")) {
             String str[] = {
                     MediaStore.Images.Media._ID,
                     MediaStore.Images.Media.DISPLAY_NAME,
@@ -44,7 +103,7 @@ public class FileBrowser extends CordovaPlugin {
                     null, null, null);
             baseUri="content://media/external/images/media/";
         }
-        else if(action.equals("audio")){
+        else if(type.equals("audio")){
             String str[] = {
                     MediaStore.Audio.Media._ID,
                     MediaStore.Audio.Media.DISPLAY_NAME,
@@ -55,7 +114,7 @@ public class FileBrowser extends CordovaPlugin {
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, str,
                     null, null, null);
             baseUri="content://media/external/audio/media/";
-        }else if(action.equals("video")){
+        }else if(type.equals("video")){
             String str[] = {
                     MediaStore.Video.Media._ID,
                     MediaStore.Video.Media.DISPLAY_NAME,
@@ -66,7 +125,7 @@ public class FileBrowser extends CordovaPlugin {
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI, str,
                     null, null, null);
             baseUri="content://media/external/video/media/";
-        }else if(action.equals("file")){
+        }else if(type.equals("file")){
             
             Uri uri = MediaStore.Files.getContentUri("external");
             
@@ -121,7 +180,7 @@ public class FileBrowser extends CordovaPlugin {
                 return;
             }
 
-            callback.success(data);
+            _callbackContext.success(data);
         }
-    }
+    }    
 }
