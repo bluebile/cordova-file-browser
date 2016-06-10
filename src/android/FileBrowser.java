@@ -54,6 +54,7 @@ public class FileBrowser extends CordovaPlugin {
             runQuery();
             return true;
         }
+        return false;
     }
 
     public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException
