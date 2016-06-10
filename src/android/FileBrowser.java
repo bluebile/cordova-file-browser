@@ -36,7 +36,7 @@ public class FileBrowser extends CordovaPlugin {
 
         _callbackContext = callbackContext;
         listFile = args;
-        Log.d(TAG, "We are entering execute");
+    
 
         if(action.equals("getPermission"))
         {
@@ -63,7 +63,6 @@ public class FileBrowser extends CordovaPlugin {
         if(_callbackContext != null) {
             for (int r : grantResults) {
                 if (r == PackageManager.PERMISSION_DENIED) {
-                    LOG.d(TAG, "Permission Denied!");
                     result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
                     _callbackContext.sendPluginResult(result);
                     return;
@@ -177,7 +176,7 @@ public class FileBrowser extends CordovaPlugin {
                     item.put("size", size);
                 }catch (JSONException e){
                     System.out.println(e.getMessage());
-                    callback.error(e.getMessage());
+                    _callbackContext.error(e.getMessage());
                     return;
                 }
                 resArray.put(item);
@@ -188,7 +187,7 @@ public class FileBrowser extends CordovaPlugin {
                 data.put("data",resArray);
             }catch (JSONException e){
                 System.out.println(e.getMessage());
-                callback.error(e.getMessage());
+                _callbackContext.error(e.getMessage());
                 return;
             }
 
