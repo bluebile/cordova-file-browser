@@ -37,7 +37,6 @@ public class FileBrowser extends CordovaPlugin {
         _callbackContext = callbackContext;
         listFile = args;
     
-
         if(action.equals("getPermission"))
         {
             if(hasPermisssion())
@@ -54,7 +53,7 @@ public class FileBrowser extends CordovaPlugin {
             runQuery();
             return true;
         }
-        return false;
+        return true;
     }
 
     public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException
@@ -97,6 +96,7 @@ public class FileBrowser extends CordovaPlugin {
     }
 
     private void runQuery(){
+        System.out.println("Rodando Query");
         JSONObject data=new JSONObject();
         JSONArray resArray=new JSONArray();
         Cursor cursor=null;
@@ -138,6 +138,8 @@ public class FileBrowser extends CordovaPlugin {
                     null, null, null);
             baseUri="content://media/external/video/media/";
         }else if(type.equals("file")){
+
+            System.out.println("TIPO:FILE");
             
             Uri uri = MediaStore.Files.getContentUri("external");
             
