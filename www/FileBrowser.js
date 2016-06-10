@@ -1,4 +1,4 @@
-var cordova = require('cordova/exec');
+var exec = require('cordova/exec');
 
 var FileBrowser = {
     getImageList : function(successCallback, errorCallback) {
