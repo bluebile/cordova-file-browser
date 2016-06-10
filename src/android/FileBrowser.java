@@ -160,6 +160,8 @@ public class FileBrowser extends CordovaPlugin {
         }
         if (cursor != null) {
 
+            System.out.println("Entroooou");
+
             while (cursor.moveToNext()) {
                 JSONObject item=new JSONObject();
 
