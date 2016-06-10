@@ -89,7 +89,7 @@ public class FileBrowser extends CordovaPlugin {
         JSONArray resArray=new JSONArray();
         Cursor cursor=null;
         String baseUri="";
-        String type = 'file';
+        String type = "file";
 
         if(type.equals("image")) {
             String str[] = {
