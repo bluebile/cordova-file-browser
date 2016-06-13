@@ -7,103 +7,32 @@ import android.webkit.MimeTypeMap;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaArgs;
-import org.apache.cordova.PermissionHelper;
-import org.apache.cordova.PluginResult;
-import org.apache.cordova.LOG;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-import android.content.pm.PackageManager;
-import android.Manifest;
-import android.os.Build;
-import android.util.Log;
 
 public class FileBrowser extends CordovaPlugin {
 
-    protected String [] permissions = { Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE};
-    protected String [] fileType;
-    protected CallbackContext _callbackContext;
-    protected JSONArray listFile;
-    protected String _action;
-    protected CordovaPlugin _cordova;
 
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-
-        _callbackContext = callbackContext;
-        listFile = args;
-        _cordova = this;
-        _action = action;
+    public boolean execute(final String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
 
        cordova.getThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {                
-                if (_action.equals("getPermission")) {
-                    if (hasPermisssion()) {
-                        PluginResult r = new PluginResult(PluginResult.Status.OK);
-                        _callbackContext.sendPluginResult(r);
-                    } else {
-                        PermissionHelper.requestPermissions(_cordova, 0, permissions);
-                    }
-                } else if (_action.equals("browse")) {
-                    runQuery();
-                }
-            }
-        });    
-
+           @Override
+           public void run() {
+               runQuery(action,callbackContext);
+           }
+       });
         return true;
     }
 
-    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException
-    {
-        PluginResult result;
-        //This is important if we're using Cordova without using Cordova, but we have the geolocation plugin installed
-        if (_callbackContext != null) {
-            for (int r : grantResults) {
-                if (r == PackageManager.PERMISSION_DENIED) {
-                    result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
-                    _callbackContext.sendPluginResult(result);
-                    return;
-                }
-
-            }
-            result = new PluginResult(PluginResult.Status.OK);
-            _callbackContext.sendPluginResult(result);
-        }
-    }
-
-    public boolean hasPermisssion()
-    {
-        for (String p : permissions) {
-            if (!PermissionHelper.hasPermission(this, p)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /*
-     * We override this so that we can access the permissions variable, which no longer exists in
-     * the parent class, since we can't initialize it reliably in the constructor!
-     */
-
-    public void requestPermissions(int requestCode)
-    {
-        PermissionHelper.requestPermissions(this, requestCode, permissions);
-    }
-
-    private void runQuery()
-    {
-        System.out.println("Rodando Query");
+    private void runQuery(String action, CallbackContext callback){
         JSONObject data=new JSONObject();
         JSONArray resArray=new JSONArray();
         Cursor cursor=null;
         String baseUri="";
-        String type = "file";
-
-        if (type.equals("image")) {
+        if(action.equals("image")) {
             String str[] = {
                     MediaStore.Images.Media._ID,
                     MediaStore.Images.Media.DISPLAY_NAME,
@@ -114,7 +43,8 @@ public class FileBrowser extends CordovaPlugin {
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, str,
                     null, null, null);
             baseUri="content://media/external/images/media/";
-        } else if (type.equals("audio")) {
+        }
+        else if(action.equals("audio")){
             String str[] = {
                     MediaStore.Audio.Media._ID,
                     MediaStore.Audio.Media.DISPLAY_NAME,
@@ -125,7 +55,7 @@ public class FileBrowser extends CordovaPlugin {
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, str,
                     null, null, null);
             baseUri="content://media/external/audio/media/";
-        } else if(type.equals("video")) {
+        }else if(action.equals("video")){
             String str[] = {
                     MediaStore.Video.Media._ID,
                     MediaStore.Video.Media.DISPLAY_NAME,
@@ -136,9 +66,7 @@ public class FileBrowser extends CordovaPlugin {
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI, str,
                     null, null, null);
             baseUri="content://media/external/video/media/";
-        } else if (type.equals("file")) {
-
-            System.out.println("TIPO:FILE");
+        }else if(action.equals("file")){
             
             Uri uri = MediaStore.Files.getContentUri("external");
             
@@ -161,8 +89,6 @@ public class FileBrowser extends CordovaPlugin {
         }
         if (cursor != null) {
 
-            System.out.println("Entroooou");
-
             while (cursor.moveToNext()) {
                 JSONObject item=new JSONObject();
 
@@ -180,7 +106,7 @@ public class FileBrowser extends CordovaPlugin {
                     item.put("size", size);
                 }catch (JSONException e){
                     System.out.println(e.getMessage());
-                    _callbackContext.error(e.getMessage());
+                    callback.error(e.getMessage());
                     return;
                 }
                 resArray.put(item);
@@ -189,13 +115,13 @@ public class FileBrowser extends CordovaPlugin {
             cursor.close();
             try {
                 data.put("data",resArray);
-            } catch (JSONException e){
+            }catch (JSONException e){
                 System.out.println(e.getMessage());
-                _callbackContext.error(e.getMessage());
+                callback.error(e.getMessage());
                 return;
             }
 
-            _callbackContext.success(data);
+            callback.success(data);
         }
-    }    
+    }
 }

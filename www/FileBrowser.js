@@ -1,4 +1,4 @@
-var exec = require('cordova/exec');
+var cordova = require('cordova');
 
 var FileBrowser = {
     getImageList : function(successCallback, errorCallback) {
@@ -11,15 +11,7 @@ var FileBrowser = {
         cordova.exec(successCallback, errorCallback, 'FileBrowser', 'video', []);
     },
     getFileList : function(successCallback, errorCallback){
-        var win = function () {
-            console.log('Indo buscar arquivos:');
-            exec(successCallback, errorCallback, 'FileBrowser' ,'browse',[]);
-        };
-        var fail = function () {
-            errorCallback('Aplicativo sem permissões para leitura de arquivo.');
-        };
-
-        exec(win, fail, 'FileBrowser', 'getPermissions',[]);
+        cordova.exec(successCallback, errorCallback, 'FileBrowser', 'file', []);
     }
 };
 
