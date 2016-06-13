@@ -36,23 +36,29 @@ public class FileBrowser extends CordovaPlugin {
 
         _callbackContext = callbackContext;
         listFile = args;
-    
-        if(action.equals("getPermission"))
-        {
-            if(hasPermisssion())
-            {
-                PluginResult r = new PluginResult(PluginResult.Status.OK);
-                _callbackContext.sendPluginResult(r);
-                return true;
+
+       cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {                
+                if(action.equals("getPermission"))
+                {
+                    if(hasPermisssion())
+                    {
+                        PluginResult r = new PluginResult(PluginResult.Status.OK);
+                        _callbackContext.sendPluginResult(r);
+                        return true;
+                    }
+                    else {
+                        PermissionHelper.requestPermissions(this, 0, permissions);
+                    }
+                    return true;
+                }else if(action.equals("browse")){
+                    runQuery();
+                    return true;
+                }
             }
-            else {
-                PermissionHelper.requestPermissions(this, 0, permissions);
-            }
-            return true;
-        }else if(action.equals("browse")){
-            runQuery();
-            return true;
-        }
+        });    
+
         return true;
     }
 
