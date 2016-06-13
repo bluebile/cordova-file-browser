@@ -16,43 +16,38 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.os.Build;
 import android.util.Log;
 
-
-
-
 public class FileBrowser extends CordovaPlugin {
 
-    String [] permissions = { Manifest.permission.READ_EXTERNAL_STORAGE};
-    String [] fileType;
-    CallbackContext _callbackContext;
-    JSONArray listFile;
+    protected String [] permissions = { Manifest.permission.READ_EXTERNAL_STORAGE};
+    protected String [] fileType;
+    protected CallbackContext _callbackContext;
+    protected JSONArray listFile;
+    protected String _action;
+    protected CordovaPlugin _cordova;
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
         _callbackContext = callbackContext;
         listFile = args;
-        CordovaPlugin _cordova = this;
-        String _action = action;
+        _cordova = this;
+        _action = action;
 
        cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {                
-                if(_action.equals("getPermission"))
-                {
-                    if(hasPermisssion())
-                    {
+                if (_action.equals("getPermission")) {
+                    if (hasPermisssion()) {
                         PluginResult r = new PluginResult(PluginResult.Status.OK);
                         _callbackContext.sendPluginResult(r);
-                    }
-                    else {
+                    } else {
                         PermissionHelper.requestPermissions(_cordova, 0, permissions);
                     }
-                }else if(action.equals("browse")){
+                } else if (_action.equals("browse")) {
                     runQuery();
                 }
             }
@@ -65,7 +60,7 @@ public class FileBrowser extends CordovaPlugin {
     {
         PluginResult result;
         //This is important if we're using Cordova without using Cordova, but we have the geolocation plugin installed
-        if(_callbackContext != null) {
+        if (_callbackContext != null) {
             for (int r : grantResults) {
                 if (r == PackageManager.PERMISSION_DENIED) {
                     result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
@@ -79,11 +74,10 @@ public class FileBrowser extends CordovaPlugin {
         }
     }
 
-    public boolean hasPermisssion() {
-        for(String p : permissions)
-        {
-            if(!PermissionHelper.hasPermission(this, p))
-            {
+    public boolean hasPermisssion()
+    {
+        for (String p : permissions) {
+            if (!PermissionHelper.hasPermission(this, p)) {
                 return false;
             }
         }
@@ -100,7 +94,8 @@ public class FileBrowser extends CordovaPlugin {
         PermissionHelper.requestPermissions(this, requestCode, permissions);
     }
 
-    private void runQuery(){
+    private void runQuery()
+    {
         System.out.println("Rodando Query");
         JSONObject data=new JSONObject();
         JSONArray resArray=new JSONArray();
@@ -108,7 +103,7 @@ public class FileBrowser extends CordovaPlugin {
         String baseUri="";
         String type = "file";
 
-        if(type.equals("image")) {
+        if (type.equals("image")) {
             String str[] = {
                     MediaStore.Images.Media._ID,
                     MediaStore.Images.Media.DISPLAY_NAME,
@@ -119,8 +114,7 @@ public class FileBrowser extends CordovaPlugin {
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, str,
                     null, null, null);
             baseUri="content://media/external/images/media/";
-        }
-        else if(type.equals("audio")){
+        } else if (type.equals("audio")) {
             String str[] = {
                     MediaStore.Audio.Media._ID,
                     MediaStore.Audio.Media.DISPLAY_NAME,
@@ -131,7 +125,7 @@ public class FileBrowser extends CordovaPlugin {
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, str,
                     null, null, null);
             baseUri="content://media/external/audio/media/";
-        }else if(type.equals("video")){
+        } else if(type.equals("video")) {
             String str[] = {
                     MediaStore.Video.Media._ID,
                     MediaStore.Video.Media.DISPLAY_NAME,
@@ -142,7 +136,7 @@ public class FileBrowser extends CordovaPlugin {
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI, str,
                     null, null, null);
             baseUri="content://media/external/video/media/";
-        }else if(type.equals("file")){
+        } else if (type.equals("file")) {
 
             System.out.println("TIPO:FILE");
             
@@ -195,7 +189,7 @@ public class FileBrowser extends CordovaPlugin {
             cursor.close();
             try {
                 data.put("data",resArray);
-            }catch (JSONException e){
+            } catch (JSONException e){
                 System.out.println(e.getMessage());
                 _callbackContext.error(e.getMessage());
                 return;
