@@ -12,6 +12,7 @@ var FileBrowser = {
     },
     getFileList : function(successCallback, errorCallback){
         var win = function () {
+            console.log('Indo buscar arquivos:');
             exec(successCallback, errorCallback, 'FileBrowser' ,'browse',[]);
         };
         var fail = function () {
