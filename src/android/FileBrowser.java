@@ -36,6 +36,7 @@ public class FileBrowser extends CordovaPlugin {
 
         _callbackContext = callbackContext;
         listFile = args;
+        CordovaPlugin cordova = this;
 
        cordova.getThreadPool().execute(new Runnable() {
             @Override
@@ -49,11 +50,10 @@ public class FileBrowser extends CordovaPlugin {
                         return true;
                     }
                     else {
-                        PermissionHelper.requestPermissions(this, 0, permissions);
+                        PermissionHelper.requestPermissions(cordova, 0, permissions);
                     }
                 }else if(action.equals("browse")){
                     runQuery();
-                    return true;
                 }
             }
         });    
