@@ -51,7 +51,6 @@ public class FileBrowser extends CordovaPlugin {
                     else {
                         PermissionHelper.requestPermissions(this, 0, permissions);
                     }
-                    return true;
                 }else if(action.equals("browse")){
                     runQuery();
                     return true;
