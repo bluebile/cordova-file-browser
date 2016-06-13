@@ -23,6 +23,7 @@
         </config-file>
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.READ_PHONE_STATE" />
         </config-file>
 
         <source-file src="src/android/FileBrowser.java" target-dir="src/com/denysbsb/cordova" />

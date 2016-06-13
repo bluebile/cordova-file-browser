@@ -23,7 +23,7 @@ import android.util.Log;
 
 public class FileBrowser extends CordovaPlugin {
 
-    protected String [] permissions = { Manifest.permission.READ_EXTERNAL_STORAGE};
+    protected String [] permissions = { Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE};
     protected String [] fileType;
     protected CallbackContext _callbackContext;
     protected JSONArray listFile;
