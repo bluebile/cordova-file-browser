@@ -37,11 +37,12 @@ public class FileBrowser extends CordovaPlugin {
         _callbackContext = callbackContext;
         listFile = args;
         CordovaPlugin _cordova = this;
+        String _action = action;
 
        cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {                
-                if(action.equals("getPermission"))
+                if(_action.equals("getPermission"))
                 {
                     if(hasPermisssion())
                     {
